@@ -1,4 +1,4 @@
-var note = document.getElementById("note");
+var note = document.getElementById("mainnote");
 var savednote = [];
 var num = 0;
 savednote[0] = document.getElementById("note1");
@@ -13,4 +13,6 @@ function save() {
   }
 }
 
-function del(del) {}
+function del(del) {
+  alert(del.value);
+}
