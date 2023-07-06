@@ -10,6 +10,7 @@ function save() {
     savednote[num].value = note.value;
     note.value = "";
     num++;
+    localStorage.setItem(num, note);
   }
 }
 
