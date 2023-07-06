@@ -1,78 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="./notepadcss.css" type="text/css" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
-      rel="stylesheet"
-    />
+    <title>노트</title>
+    <link rel="stylesheet" href="notepadcss.css" />
   </head>
-  <body
-    background="https://t1.daumcdn.net/cfile/tistory/176DCE484E95190E19"
-    style="background-size: cover"
-  >
-    <script
-      src="https://kit.fontawesome.com/e9398a8c81.js"
-      crossorigin="anonymous"
-    ></script>
-
-    <strong><p class="title">메모장</p></strong>
-
-    <div>
-      <textarea name="" id="mainnote" cols="30" rows="10" autofocus></textarea>
+  <body>
+    <div id="noteApp">
+      <div id="noteList"></div>
+      <div id="addNoteContainer">
+        <button id="addNoteButton">노트 추가</button>
+      </div>
     </div>
-    <div>
-      <textarea
-        name=""
-        class="savednote"
-        id="note1"
-        cols="30"
-        rows="10"
-        readonly
-        autofocus
-      ></textarea>
+    <div id="editNoteScreen">
+      <textarea id="noteText"></textarea>
+      <div id="editNoteButtons">
+        <button id="saveNoteButton">저장</button>
+        <button id="deleteNoteButton">삭제</button>
+      </div>
     </div>
-    <div>
-      <textarea
-        name=""
-        class="savednote"
-        id="note2"
-        cols="30"
-        rows="10"
-        readonly
-        autofocus
-      ></textarea>
-    </div>
-    <div>
-      <textarea
-        name=""
-        class="savednote"
-        id="note3"
-        cols="30"
-        rows="10"
-        readonly
-        autofocus
-      ></textarea>
-    </div>
+    <script>
+      const noteList = document.getElementById("noteList");
+      const addNoteButton = document.getElementById("addNoteButton");
+      const editNoteScreen = document.getElementById("editNoteScreen");
+      const noteText = document.getElementById("noteText");
+      const saveNoteButton = document.getElementById("saveNoteButton");
+      const deleteNoteButton = document.getElementById("deleteNoteButton");
 
-    <button class="savebutton" onclick="save()">저장</button>
-    <script src="./notepad.js"></script>
+      // 저장된 노트 데이터를 가져옴
+      function getSavedNotes() {
+        const savedNotes = localStorage.getItem("notes");
+        return savedNotes ? JSON.parse(savedNotes) : [];
+      }
 
-    <button class="delbutton" id="delbutton1">
-      <i class="fa-solid fa-trash"></i>
-    </button>
-    <button class="delbutton" id="delbutton2" onclick="del(this)">
-      <i class="fa-solid fa-trash"></i>
-      <button class="delbutton" id="delbutton3">
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    </button>
+      // 노트 데이터를 로컬 스토리지에 저장
+      function saveNotes(notes) {
+        localStorage.setItem("notes", JSON.stringify(notes));
+      }
+
+      // 초기화 함수
+      function init() {
+        loadNotes();
+        addNoteButton.addEventListener("click", showEditNoteScreen);
+        saveNoteButton.addEventListener("click", saveNote);
+        deleteNoteButton.addEventListener("click", deleteNote);
+      }
+
+      // 저장된 노트를 로드하여 표시
+      function loadNotes() {
+        const savedNotes = getSavedNotes();
+        noteList.innerHTML = "";
+
+        savedNotes.forEach((note) => {
+          const noteBox = createNoteBox(note);
+          noteList.appendChild(noteBox);
+        });
+      }
+
+      // 노트 박스 생성
+      function createNoteBox(note) {
+        const noteBox = document.createElement("div");
+        noteBox.classList.add("noteBox");
+        noteBox.textContent = note;
+        noteBox.addEventListener("click", () => showEditNoteScreen(note));
+        return noteBox;
+      }
+
+      // 노트 편집 화면을 보여줌
+      function showEditNoteScreen(note) {
+        noteText.value = note || "";
+        editNoteScreen.style.display = "flex";
+      }
+
+      // 노트를 저장
+      function saveNote() {
+        const note = noteText.value;
+
+        if (note) {
+          const savedNotes = getSavedNotes();
+          if (savedNotes.includes(note)) {
+            alert("이미 존재하는 노트입니다.");
+          } else {
+            savedNotes.push(note);
+            saveNotes(savedNotes);
+            const noteBox = createNoteBox(note);
+            noteList.prepend(noteBox);
+            showMainScreen();
+          }
+        } else {
+          alert("노트 내용을 입력해주세요.");
+        }
+      }
+
+      // 노트를 삭제
+      function deleteNote() {
+        const note = noteText.value;
+
+        if (note) {
+          const savedNotes = getSavedNotes();
+          const index = savedNotes.indexOf(note);
+          if (index !== -1) {
+            savedNotes.splice(index, 1);
+            saveNotes(savedNotes);
+            loadNotes();
+            showMainScreen();
+          }
+        } else {
+          alert("삭제할 노트를 선택해주세요.");
+        }
+      }
+
+      init();
+    </script>
+    <!-- <script src="notepad.js"></script> -->
   </body>
 </html>

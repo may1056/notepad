@@ -13,6 +13,9 @@ function save() {
     localStorage.setItem(num, note);
   }
 }
+for (var i = 0; i < 3; i++) {
+  print.localStorage(i);
+}
 
 function del(del) {
   alert(del.value);
