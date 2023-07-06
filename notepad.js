@@ -6,7 +6,11 @@ savednote[1] = document.getElementById("note2");
 savednote[2] = document.getElementById("note3");
 
 function save() {
-  savednote[num].value = note.value;
-  note.value = "";
-  num++;
+  if (note.value != "") {
+    savednote[num].value = note.value;
+    note.value = "";
+    num++;
+  }
 }
+
+function del(del) {}
