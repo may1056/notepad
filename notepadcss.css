@@ -73,6 +73,16 @@ a {
   color: black;
 }
 
+#bob :hover {
+  cursor: default;
+  color: black;
+}
+
+#bob :active {
+  cursor: default;
+  color: black;
+}
+
 #noteText {
   float: right;
   width: 60%;
